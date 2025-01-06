@@ -1,0 +1,16 @@
+<!-- todo_app/templates/task_form.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Task Form</title>
+</head>
+<body>
+    <h1>Create / Edit Task</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
