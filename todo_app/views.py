@@ -5,6 +5,8 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.utils.timezone import now
 from .models import Task
+from .forms import TaskForm
+
 
 # Home page view
 @login_required
@@ -18,13 +20,19 @@ def home(request):
         tasks = tasks.order_by("priority")  # Assuming 'priority' is an integer for sorting
     elif sort_by == "deadline":
         tasks = tasks.order_by("deadline")
+    elif sort_by == "created_at":
+        tasks = tasks.order_by("created_at")  # Sort by creation date if selected
 
     # Filtering logic
-    filter_by = request.GET.get("filter_by", None)
+    filter_by = request.GET.get("filter_by", "all")  # Default filter to 'all' tasks
     if filter_by == "high_priority":
         tasks = tasks.filter(priority="High")
     elif filter_by == "overdue":
         tasks = tasks.filter(deadline__lt=now())  # Filter overdue tasks
+    elif filter_by == "completed":
+        tasks = tasks.filter(completed=True)  # Filter completed tasks
+    elif filter_by == "pending":
+        tasks = tasks.filter(completed=False)  # Filter pending tasks
 
     context = {
         "tasks": tasks,
@@ -45,13 +53,19 @@ def task_list(request):
         tasks = tasks.order_by("priority")  # Assuming 'priority' is an integer for sorting
     elif sort_by == "deadline":
         tasks = tasks.order_by("deadline")
+    elif sort_by == "created_at":
+        tasks = tasks.order_by("created_at")  # Sort by creation date if selected
 
     # Filtering logic
-    filter_by = request.GET.get("filter_by", None)
+    filter_by = request.GET.get("filter_by", "all")  # Default filter to 'all' tasks
     if filter_by == "high_priority":
         tasks = tasks.filter(priority="High")
     elif filter_by == "overdue":
         tasks = tasks.filter(deadline__lt=now())  # Filter overdue tasks
+    elif filter_by == "completed":
+        tasks = tasks.filter(completed=True)  # Filter completed tasks
+    elif filter_by == "pending":
+        tasks = tasks.filter(completed=False)  # Filter pending tasks
 
     context = {
         "tasks": tasks,
@@ -63,22 +77,29 @@ def task_list(request):
 # Add a new task
 @login_required
 def add_task(request):
-    # Handle adding a new task here
-    # If the request is POST, save the task, else render a form for adding a task
-    pass
+    if request.method == "POST":
+        form = TaskForm(request.POST)
+        if form.is_valid():
+            # Save the task and associate it with the logged-in user
+            task = form.save(commit=False)
+            task.user = request.user  # Assign the current user to the task
+            task.save()  # Save the task to the database
+            return redirect("home")  # Redirect to the home page after adding the task
+    else:
+        form = TaskForm()
+
+    return render(request, "todo_app/add_task.html", {"form": form})
 
 # Edit an existing task
 @login_required
 def edit_task(request, task_id):
     # Handle editing a task here
-    # Fetch the task by ID, then update its details based on the form submission
     pass
 
 # Delete a task
 @login_required
 def delete_task(request, task_id):
     # Handle deleting a task here
-    # Fetch the task by ID, then delete it
     pass
 
 # User Login

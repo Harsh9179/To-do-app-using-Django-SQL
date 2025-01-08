@@ -1,44 +1,71 @@
-<div class="container">
-    <h1>My Tasks</h1>
+<!-- todo_app/templates/todo_app/task_list.html -->
 
-    <!-- Sorting Options -->
-    <div>
-        <h4>Sort By:</h4>
-        <a href="?sort_by=priority" class="btn btn-primary">Priority</a>
-        <a href="?sort_by=deadline" class="btn btn-primary">Deadline</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task List</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>To-Do List</h2>
+
+        <!-- Sorting and Filtering Dropdowns -->
+        <form method="GET" id="sort-filter-form">
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label for="filter_by">Filter By</label>
+                    <select name="filter_by" id="filter_by" class="form-control">
+                        <option value="all" {% if filter_by == 'all' %}selected{% endif %}>All</option>
+                        <option value="completed" {% if filter_by == 'completed' %}selected{% endif %}>Completed</option>
+                        <option value="pending" {% if filter_by == 'pending' %}selected{% endif %}>Pending</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="sort_by">Sort By</label>
+                    <select name="sort_by" id="sort_by" class="form-control">
+                        <option value="priority" {% if sort_by == 'priority' %}selected{% endif %}>Priority</option>
+                        <option value="deadline" {% if sort_by == 'deadline' %}selected{% endif %}>Deadline</option>
+                        <option value="created_at" {% if sort_by == 'created_at' %}selected{% endif %}>Created At</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-primary mt-4">Apply</button>
+                </div>
+            </div>
+        </form>
+
+        <!-- Displaying Tasks -->
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Task</th>
+                    <th>Priority</th>
+                    <th>Deadline</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for task in tasks %}
+                    <tr>
+                        <td>{{ task.name }}</td>
+                        <td>{{ task.priority }}</td>
+                        <td>{{ task.deadline }}</td>
+                        <td>{% if task.completed %}Completed{% else %}Pending{% endif %}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 
-    <!-- Filtering Options -->
-    <div>
-        <h4>Filter By:</h4>
-        <a href="?filter_by=high_priority" class="btn btn-secondary">High Priority</a>
-        <a href="?filter_by=overdue" class="btn btn-secondary">Overdue</a>
-        <a href="?" class="btn btn-secondary">Clear Filters</a>
-    </div>
-
-    <!-- Task List -->
-    <table class="table mt-4">
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Priority</th>
-                <th>Deadline</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for task in tasks %}
-                <tr>
-                    <td>{{ task.title }}</td>
-                    <td>{{ task.description }}</td>
-                    <td>{{ task.priority }}</td>
-                    <td>{{ task.deadline }}</td>
-                </tr>
-            {% empty %}
-                <tr>
-                    <td colspan="4">No tasks found.</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // JavaScript for Dynamic Filtering and Sorting (without page reload)
+        $('#sort-filter-form').on('change', function() {
+            $(this).submit();  // Submit form when dropdown selection changes
+        });
+    </script>
+</body>
+</html>
