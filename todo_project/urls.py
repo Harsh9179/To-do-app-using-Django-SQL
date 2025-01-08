@@ -5,6 +5,6 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts/', include('django.contrib.auth.urls')),  # This includes login, logout, password reset URLs
-    path('', include('todo_app.urls')),  # Include our app's URLs
+    path('accounts/', include('django.contrib.auth.urls')),  # Authentication URLs
+    path('', include('todo_app.urls')),  # Todo app URLs
 ]
