@@ -1,0 +1,44 @@
+<div class="container">
+    <h1>My Tasks</h1>
+
+    <!-- Sorting Options -->
+    <div>
+        <h4>Sort By:</h4>
+        <a href="?sort_by=priority" class="btn btn-primary">Priority</a>
+        <a href="?sort_by=deadline" class="btn btn-primary">Deadline</a>
+    </div>
+
+    <!-- Filtering Options -->
+    <div>
+        <h4>Filter By:</h4>
+        <a href="?filter_by=high_priority" class="btn btn-secondary">High Priority</a>
+        <a href="?filter_by=overdue" class="btn btn-secondary">Overdue</a>
+        <a href="?" class="btn btn-secondary">Clear Filters</a>
+    </div>
+
+    <!-- Task List -->
+    <table class="table mt-4">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Priority</th>
+                <th>Deadline</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in tasks %}
+                <tr>
+                    <td>{{ task.title }}</td>
+                    <td>{{ task.description }}</td>
+                    <td>{{ task.priority }}</td>
+                    <td>{{ task.deadline }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="4">No tasks found.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
